@@ -1,0 +1,5 @@
+services:
+  mastodon-paywall:
+    image: ghcr.io/freifunkmuc/mastodon-paywall:latest
+    container_name: mastodon-paywall
+    env_file: .env
