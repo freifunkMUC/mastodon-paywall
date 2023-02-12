@@ -1,5 +1,7 @@
 services:
   mastodon-paywall:
-    image: ghcr.io/freifunkmuc/mastodon-paywall:latest
+    image: ghcr.io/freifunkmuc/mastodon-paywall:main
     container_name: mastodon-paywall
     env_file: .env
+    ports:
+      - 3001:3000
