@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, setup the environment variables using: 
+First, setup the environment variables using:
 
 ```bash
 cp .env.local.example .env.local

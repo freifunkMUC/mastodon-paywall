@@ -1,9 +1,9 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import Form from '../components/form'
+import Form from "../components/form";
 
 export default function Home() {
   return (
@@ -18,5 +18,5 @@ export default function Home() {
         <Form />
       </main>
     </>
-  )
+  );
 }
