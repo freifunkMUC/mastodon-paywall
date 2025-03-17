@@ -9,8 +9,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>FFMuc Registration</title>
-        <meta name="description" content="FFMuc Registration" />
+        <title>Mastodon Registraton</title>
+        <meta name="description" content="Mastodon Registration" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
