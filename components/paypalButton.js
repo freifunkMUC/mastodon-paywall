@@ -6,43 +6,62 @@ export default function PaypalButton({
   triggerValidation,
   registerUser,
 }) {
-  const [{ options }, dispatch] = usePayPalScriptReducer();
+  const [dispatch] = usePayPalScriptReducer();
 
+  // Reset PayPal options to ensure the intent is set to "subscription"
   useEffect(() => {
     dispatch({
       type: "resetOptions",
       value: {
-        ...options,
         intent: "subscription",
       },
     });
-  }, [dispatch, options]); // Added 'dispatch' and 'options' to the dependency array
+  }, [dispatch]); // Only 'dispatch' is needed as a dependency
 
   return (
     <PayPalButtons
-      createSubscription={(data, actions) =>
-        actions.subscription.create({
+      createSubscription={(data, actions) => {
+        // Create a PayPal subscription with the specified plan ID
+        return actions.subscription.create({
           plan_id: process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID,
-        })
-      }
-      onApprove={async (data, actions) => {
-        const subscriptionData = await actions.subscription.get();
-        const formData = getFormValues();
-        const userData = {
-          ...formData,
-          subscriptionId: subscriptionData.subscriptionID,
-          orderId: subscriptionData.orderID,
-        };
-
-        return registerUser(userData);
+        });
       }}
-      onClick={(data, actions) =>
-        triggerValidation().then((isValid) =>
-          isValid ? actions.resolve() : actions.reject(),
-        )
-      }
+      onApprove={async (data, actions) => {
+        try {
+          // Retrieve subscription details after approval
+          const subscriptionData = await actions.subscription.get();
+          const formData = getFormValues();
+
+          // Combine form data with subscription details
+          const userData = {
+            ...formData,
+            subscriptionId: subscriptionData.subscriptionID,
+            orderId: subscriptionData.orderID,
+          };
+
+          // Register the user with the combined data
+          await registerUser(userData);
+        } catch (error) {
+          console.error("Error during registration:", error);
+          // Handle errors (e.g., display a message to the user)
+        }
+      }}
+      onClick={async (data, actions) => {
+        // Validate the form before proceeding with PayPal payment
+        const isValid = await triggerValidation();
+        if (isValid) {
+          return actions.resolve(); // Proceed with payment
+        } else {
+          return actions.reject(); // Prevent payment if validation fails
+        }
+      }}
+      onError={(error) => {
+        // Handle PayPal payment errors
+        console.error("PayPal error:", error);
+        // Display an error message to the user
+      }}
       style={{
-        label: "subscribe",
+        label: "subscribe", // Customize the button label
       }}
     />
   );

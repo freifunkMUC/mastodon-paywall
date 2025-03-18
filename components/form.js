@@ -1,13 +1,9 @@
 import { useState } from "react";
-
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-
 import PaypalButton from "./paypalButton";
 
 export default function Form() {
@@ -18,7 +14,7 @@ export default function Form() {
       .max(20, "Username must not exceed 20 characters")
       .matches(
         /[a-zA-Z0-9_]/,
-        "Username must contain only letters, numbers and underscores",
+        "Username must contain only letters, numbers, and underscores",
       ),
     email: Yup.string().required("Email is required").email("Email is invalid"),
     password: Yup.string()
@@ -38,37 +34,51 @@ export default function Form() {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
+
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
   const registerUser = async (data) => {
     setError(null);
     setSuccess(null);
-    const r = await fetch("/api/register", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-    const d = await r.json();
+    try {
+      const r = await fetch("/api/register", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      const d = await r.json();
 
-    if (r.status === 200) {
-      setSuccess("User wurde erfolgreich angelegt!");
-    } else {
-      setError(d.error);
+      if (r.status === 200) {
+        setSuccess("User wurde erfolgreich angelegt!");
+      } else {
+        setError(d.error || "An error occurred during registration.");
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
     }
   };
 
   return (
     <div className="register-form">
       {!success ? (
-        <form>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const isValid = await triggerValidation();
+            if (isValid) {
+              registerUser(getFormValues());
+            }
+          }}
+        >
           {error && (
             <div className="alert alert-danger" role="alert">
               {error}
             </div>
           )}
           <div className="form-group">
-            <label>Username</label>
+            <label htmlFor="username">Username</label>
             <input
+              id="username"
               name="username"
               type="text"
               {...register("username")}
@@ -78,8 +88,9 @@ export default function Form() {
           </div>
 
           <div className="form-group">
-            <label>Email</label>
+            <label htmlFor="email">Email</label>
             <input
+              id="email"
               name="email"
               type="email"
               {...register("email")}
@@ -89,8 +100,9 @@ export default function Form() {
           </div>
 
           <div className="form-group">
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
             <input
+              id="password"
               name="password"
               type="password"
               {...register("password")}
@@ -98,9 +110,11 @@ export default function Form() {
             />
             <div className="invalid-feedback">{errors.password?.message}</div>
           </div>
+
           <div className="form-group">
-            <label>Confirm Password</label>
+            <label htmlFor="confirmPassword">Confirm Password</label>
             <input
+              id="confirmPassword"
               name="confirmPassword"
               type="password"
               {...register("confirmPassword")}
@@ -115,6 +129,7 @@ export default function Form() {
 
           <div className="form-group form-check">
             <input
+              id="acceptTerms"
               name="acceptTerms"
               type="checkbox"
               {...register("acceptTerms")}
@@ -129,6 +144,7 @@ export default function Form() {
               {errors.acceptTerms?.message}
             </div>
           </div>
+
           <PayPalScriptProvider
             options={{
               "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
