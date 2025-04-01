@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM node:23.9.0-bookworm AS deps
+FROM node:23.10.0-bookworm AS deps
 WORKDIR /app
 ENV NODE_ENV=production
 
@@ -14,7 +14,7 @@ RUN \
 
 
 # Rebuild the source code only when needed
-FROM node:23.9.0-bookworm AS builder
+FROM node:23.10.0-bookworm AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
