@@ -6,54 +6,41 @@ export default function PaypalButton({
   triggerValidation,
   registerUser,
 }) {
-  const [state, dispatch] = usePayPalScriptReducer(); // ✅ Fix: dispatch richtig extrahieren
+  const [{ options }, dispatch] = usePayPalScriptReducer();
 
-  // Reset PayPal options to ensure the intent is set to "subscription"
   useEffect(() => {
     dispatch({
       type: "resetOptions",
       value: {
+        ...options,
         intent: "subscription",
       },
     });
-  }, [dispatch]);
+  }, [dispatch, options]); // Added 'dispatch' and 'options' to the dependency array
 
   return (
     <PayPalButtons
-      createSubscription={(data, actions) => {
-        return actions.subscription.create({
+      createSubscription={(data, actions) =>
+        actions.subscription.create({
           plan_id: process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID,
-        });
-      }}
+        })
+      }
       onApprove={async (data, actions) => {
-        try {
-          const subscriptionData = await actions.subscription.get();
-          const formData = getFormValues();
+        const subscriptionData = await actions.subscription.get();
+        const formData = getFormValues();
+        const userData = {
+          ...formData,
+          subscriptionId: subscriptionData.subscriptionID,
+          orderId: subscriptionData.orderID,
+        };
 
-          const userData = {
-            ...formData,
-            subscriptionId: subscriptionData.subscriptionID,
-            orderId: subscriptionData.orderID,
-          };
-
-          await registerUser(userData);
-        } catch (error) {
-          console.error("Error during registration:", error);
-          // Optional: Show error message to user
-        }
+        return registerUser(userData);
       }}
-      onClick={async (data, actions) => {
-        const isValid = await triggerValidation();
-        if (isValid) {
-          return actions.resolve();
-        } else {
-          return actions.reject();
-        }
-      }}
-      onError={(error) => {
-        console.error("PayPal error:", error);
-        // Optional: Show error message to user
-      }}
+      onClick={(data, actions) =>
+        triggerValidation().then((isValid) =>
+          isValid ? actions.resolve() : actions.reject(),
+        )
+      }
       style={{
         label: "subscribe",
       }}
