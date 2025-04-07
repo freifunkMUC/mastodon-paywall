@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import PaypalButton from "./paypalButton";
+import ClientOnly from "./ClientOnly";
 
 export default function Form() {
   const validationSchema = Yup.object().shape({
@@ -13,8 +14,8 @@ export default function Form() {
       .min(4, "Username must be at least 4 characters")
       .max(20, "Username must not exceed 20 characters")
       .matches(
-        /[a-zA-Z0-9_]/,
-        "Username must contain only letters, numbers, and underscores",
+        /^[a-zA-Z0-9_]+$/,
+        "Username must contain only letters, numbers, and underscores"
       ),
     email: Yup.string().required("Email is required").email("Email is invalid"),
     password: Yup.string()
@@ -75,11 +76,11 @@ export default function Form() {
               {error}
             </div>
           )}
+
           <div className="form-group">
             <label htmlFor="username">Username</label>
             <input
               id="username"
-              name="username"
               type="text"
               {...register("username")}
               className={`form-control ${errors.username ? "is-invalid" : ""}`}
@@ -91,7 +92,6 @@ export default function Form() {
             <label htmlFor="email">Email</label>
             <input
               id="email"
-              name="email"
               type="email"
               {...register("email")}
               className={`form-control ${errors.email ? "is-invalid" : ""}`}
@@ -103,7 +103,6 @@ export default function Form() {
             <label htmlFor="password">Password</label>
             <input
               id="password"
-              name="password"
               type="password"
               {...register("password")}
               className={`form-control ${errors.password ? "is-invalid" : ""}`}
@@ -115,7 +114,6 @@ export default function Form() {
             <label htmlFor="confirmPassword">Confirm Password</label>
             <input
               id="confirmPassword"
-              name="confirmPassword"
               type="password"
               {...register("confirmPassword")}
               className={`form-control ${
@@ -130,7 +128,6 @@ export default function Form() {
           <div className="form-group form-check">
             <input
               id="acceptTerms"
-              name="acceptTerms"
               type="checkbox"
               {...register("acceptTerms")}
               className={`form-check-input ${
@@ -145,21 +142,28 @@ export default function Form() {
             </div>
           </div>
 
-          <PayPalScriptProvider
-            options={{
-              "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-              components: "buttons",
-              intent: "subscription",
-              vault: true,
-              currency: "EUR",
-            }}
-          >
-            <PaypalButton
-              getFormValues={getFormValues}
-              triggerValidation={triggerValidation}
-              registerUser={registerUser}
-            />
-          </PayPalScriptProvider>
+          {/* PayPal Button only client-side */}
+          <ClientOnly>
+            <PayPalScriptProvider
+              options={{
+                "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+                components: "buttons",
+                intent: "subscription",
+                vault: true,
+                currency: "EUR",
+              }}
+            >
+              <PaypalButton
+                getFormValues={getFormValues}
+                triggerValidation={triggerValidation}
+                registerUser={registerUser}
+              />
+            </PayPalScriptProvider>
+          </ClientOnly>
+
+          <button type="submit" className="btn-submit">
+            Submit
+          </button>
         </form>
       ) : (
         <div className="alert alert-success" role="alert">
