@@ -9,14 +9,16 @@ export default function PaypalButton({
   const [{ options }, dispatch] = usePayPalScriptReducer();
 
   useEffect(() => {
-    dispatch({
-      type: "resetOptions",
-      value: {
-        ...options,
-        intent: "subscription",
-      },
-    });
-  }, [dispatch]);
+    if (options.intent !== "subscription") {
+      dispatch({
+        type: "resetOptions",
+        value: {
+          ...options,
+          intent: "subscription",
+        },
+      });
+    }
+  }, [dispatch, options.intent]);  
 
   return (
     <PayPalButtons
