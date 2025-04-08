@@ -18,7 +18,7 @@ export default function PaypalButton({
         },
       });
     }
-  }, [dispatch, options.intent]);  
+  }, [dispatch, options]);  
 
   return (
     <PayPalButtons

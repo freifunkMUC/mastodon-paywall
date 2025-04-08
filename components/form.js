@@ -1,11 +1,8 @@
 import { useState } from "react";
-
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 import PaypalButton from "./paypalButton";
@@ -17,8 +14,8 @@ export default function Form() {
       .min(4, "Username must be at least 4 characters")
       .max(20, "Username must not exceed 20 characters")
       .matches(
-        /[a-zA-Z0-9_]/,
-        "Username must contain only letters, numbers and underscores",
+        /^[a-zA-Z0-9_]+$/,
+        "Username must contain only letters, numbers, and underscores"
       ),
     email: Yup.string().required("Email is required").email("Email is invalid"),
     password: Yup.string()
@@ -38,22 +35,27 @@ export default function Form() {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
+
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
   const registerUser = async (data) => {
     setError(null);
     setSuccess(null);
-    const r = await fetch("/api/register", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-    const d = await r.json();
+    try {
+      const r = await fetch("/api/register", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      const d = await r.json();
 
-    if (r.status === 200) {
-      setSuccess("User wurde erfolgreich angelegt!");
-    } else {
-      setError(d.error);
+      if (r.status === 200) {
+        setSuccess("User wurde erfolgreich angelegt!");
+      } else {
+        setError(d.error || "An error occurred during registration.");
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
     }
   };
 
