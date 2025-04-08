@@ -16,7 +16,7 @@ export default function PaypalButton({
         intent: "subscription",
       },
     });
-  }, [dispatch, options]); // Added 'dispatch' and 'options' to the dependency array
+  }, [dispatch]);
 
   return (
     <PayPalButtons
