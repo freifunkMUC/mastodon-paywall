@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import fetch from "node-fetch";
-import './envConfig.ts'
+import '../../envConfig.ts'
 const { API_TOKEN } = process.env;
 
 export default async function handler(req, res) {
