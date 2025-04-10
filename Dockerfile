@@ -38,7 +38,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 
-USER 1001
+USER 1000
 
 EXPOSE 3000
 
