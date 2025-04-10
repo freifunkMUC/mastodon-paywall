@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
+    "@next/env": "^15.3.0",
     "@paypal/react-paypal-js": "^8.8.2",
     "bootstrap": "^5.3.5",
     "eslint-config-next": "^15.2.4",
