@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import '../envConfig.ts'
+import "../envConfig.ts";
 
 export default function PaypalButton({
   getFormValues,
@@ -19,7 +19,7 @@ export default function PaypalButton({
         },
       });
     }
-  }, [dispatch, options]);  
+  }, [dispatch, options]);
 
   return (
     <PayPalButtons

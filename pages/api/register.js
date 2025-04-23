@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import fetch from "node-fetch";
-import '../../envConfig.ts'
+import "../../envConfig.ts";
 const { API_TOKEN } = process.env;
 
 export default async function handler(req, res) {
@@ -14,7 +14,12 @@ export default async function handler(req, res) {
     // Parse and validate the request body
     const body = JSON.parse(req.body);
 
-    if (!body.username || !body.email || !body.password || !body.subscriptionId) {
+    if (
+      !body.username ||
+      !body.email ||
+      !body.password ||
+      !body.subscriptionId
+    ) {
       res.status(400).json({ error: "Missing required fields" });
       return;
     }

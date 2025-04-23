@@ -6,7 +6,7 @@ on:
       - master
       - main
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 env:
   REGISTRY: ghcr.io

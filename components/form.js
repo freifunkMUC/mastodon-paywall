@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import '../envConfig.ts'
+import "../envConfig.ts";
 
 import PaypalButton from "./paypalButton";
 
@@ -16,7 +16,7 @@ export default function Form() {
       .max(20, "Username must not exceed 20 characters")
       .matches(
         /^[a-zA-Z0-9_]+$/,
-        "Username must contain only letters, numbers, and underscores"
+        "Username must contain only letters, numbers, and underscores",
       ),
     email: Yup.string().required("Email is required").email("Email is invalid"),
     password: Yup.string()
