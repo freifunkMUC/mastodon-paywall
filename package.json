@@ -12,22 +12,22 @@
     "@hookform/resolvers": "^5.0.1",
     "@next/env": "^15.3.0",
     "@paypal/react-paypal-js": "^8.8.3",
-    "bootstrap": "^5.3.5",
-    "eslint-config-next": "^15.3.1",
-    "next": "^15.3.1",
+    "bootstrap": "^5.3.6",
+    "eslint-config-next": "^15.3.2",
+    "next": "^15.3.2",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.56.1",
+    "react-hook-form": "^7.56.4",
     "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.22.0",
-    "@types/node": "^22.15.3",
-    "@typescript-eslint/eslint-plugin": "^8.31.1",
-    "@typescript-eslint/parser": "^8.31.1",
-    "eslint": "^9.25.1",
-    "prettier": "3.5.3"
+    "@types/node": "^22.15.18",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.27.0",
+    "prettier": "^3.5.3"
   }
 }
