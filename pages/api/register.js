@@ -7,7 +7,7 @@ const RATE_LIMIT_MAX = 10;
 const rateLimitStore = new Map();
 
 const usernameRegex = /^[a-zA-Z0-9_]+$/;
-const emailRegex = /.+@.+\..+/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const getClientIp = (req) => {
   const forwarded = req.headers["x-forwarded-for"];
