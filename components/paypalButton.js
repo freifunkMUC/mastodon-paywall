@@ -5,6 +5,7 @@ export default function PaypalButton({
   getFormValues,
   triggerValidation,
   registerUser,
+  planId,
 }) {
   const [{ options }, dispatch] = usePayPalScriptReducer();
 
@@ -22,9 +23,10 @@ export default function PaypalButton({
 
   return (
     <PayPalButtons
+      disabled={!planId}
       createSubscription={(data, actions) =>
         actions.subscription.create({
-          plan_id: process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID,
+          plan_id: planId,
         })
       }
       onApprove={async (data, actions) => {
@@ -44,6 +46,8 @@ export default function PaypalButton({
         )
       }
       style={{
+        layout: "vertical",
+        shape: "pill",
         label: "subscribe",
       }}
     />
