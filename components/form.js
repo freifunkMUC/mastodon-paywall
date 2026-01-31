@@ -290,8 +290,19 @@ export default function Form() {
           )}
         </form>
       ) : (
-        <div className="alert alert-success" role="status">
-          {success}
+        <div className="success-card" role="status">
+          <h3>Account created 🎉</h3>
+          <p>{success}</p>
+          <p>
+            You can now sign in at{" "}
+            <a href="https://social.ffmuc.net" target="_blank" rel="noreferrer">
+              social.ffmuc.net
+            </a>
+            .
+          </p>
+          <p className="helper">
+            If you ever need a password reset, use the Mastodon login screen.
+          </p>
         </div>
       )}
     </div>

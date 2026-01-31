@@ -135,6 +135,30 @@ img {
   color: #2446a6;
 }
 
+.success-card {
+  border-radius: var(--radius-md);
+  border: 1px solid #c7f0d6;
+  background: #effaf3;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.success-card h3 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.success-card a {
+  color: var(--brand-dark);
+  font-weight: 600;
+}
+
+.success-card a:hover {
+  text-decoration: underline;
+}
+
 .paypal-wrapper {
   margin-top: 0.6rem;
 }
