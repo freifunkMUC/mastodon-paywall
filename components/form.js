@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import "../envConfig.ts";
 
 import PaypalButton from "./paypalButton";
 
