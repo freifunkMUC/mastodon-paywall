@@ -263,29 +263,31 @@ export default function Form() {
               )}
             </div>
           </div>
-          <PayPalScriptProvider
-            options={
-              config
-                ? {
-                    "client-id": config.paypalClientId,
-                    components: "buttons",
-                    intent: "subscription",
-                    vault: true,
-                    currency: "EUR",
-                  }
-                : {}
-            }
-            deferLoading={!isPayPalReady || !config}
-          >
-            <div className="paypal-wrapper">
-              <PaypalButton
-                getFormValues={getFormValues}
-                triggerValidation={triggerValidation}
-                registerUser={registerUser}
-                planId={config?.paypalPlanId}
-              />
+          {config ? (
+            <PayPalScriptProvider
+              options={{
+                "client-id": config.paypalClientId,
+                components: "buttons",
+                intent: "subscription",
+                vault: true,
+                currency: "EUR",
+              }}
+              deferLoading={!isPayPalReady}
+            >
+              <div className="paypal-wrapper">
+                <PaypalButton
+                  getFormValues={getFormValues}
+                  triggerValidation={triggerValidation}
+                  registerUser={registerUser}
+                  planId={config.paypalPlanId}
+                />
+              </div>
+            </PayPalScriptProvider>
+          ) : (
+            <div className="alert alert-info" role="status">
+              Loading PayPal configuration…
             </div>
-          </PayPalScriptProvider>
+          )}
         </form>
       ) : (
         <div className="alert alert-success" role="status">
