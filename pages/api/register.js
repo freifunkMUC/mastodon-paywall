@@ -7,7 +7,33 @@ const RATE_LIMIT_MAX = 10;
 const rateLimitStore = new Map();
 
 const usernameRegex = /^[a-zA-Z0-9_]+$/;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const isValidEmail = (value) => {
+  if (typeof value !== "string") {
+    return false;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return false;
+  }
+
+  if (trimmed.includes(" ")) {
+    return false;
+  }
+
+  const atIndex = trimmed.indexOf("@");
+  const lastAtIndex = trimmed.lastIndexOf("@");
+  if (atIndex <= 0 || atIndex !== lastAtIndex) {
+    return false;
+  }
+
+  const dotIndex = trimmed.indexOf(".", atIndex + 2);
+  if (dotIndex === -1 || dotIndex === trimmed.length - 1) {
+    return false;
+  }
+
+  return true;
+};
 
 const getClientIp = (req) => {
   const forwarded = req.headers["x-forwarded-for"];
@@ -83,7 +109,7 @@ export default async function handler(req, res) {
       return;
     }
 
-    if (!emailRegex.test(email)) {
+    if (!isValidEmail(email)) {
       res.status(400).json({ error: "Invalid email" });
       return;
     }
