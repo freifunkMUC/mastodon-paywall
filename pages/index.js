@@ -22,7 +22,7 @@ export default function Home() {
               <div className={styles.brandMark}>M</div>
               <div>
                 <p className={styles.brandName}>Mastodon</p>
-                <p className={styles.brandTag}>ffmuc.social</p>
+                <p className={styles.brandTag}>social.ffmuc.net</p>
               </div>
               <span className={styles.badge}>Community</span>
             </div>
