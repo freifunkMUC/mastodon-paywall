@@ -82,7 +82,7 @@ export default function Home() {
                 Terms of Service
               </a>
               {" "}
-              and consent to account creation on ffmuc.social.
+              and consent to account creation on social.ffmuc.net.
             </p>
             <div className={styles.linksGrid}>
               <a
