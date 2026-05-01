@@ -1,4 +1,4 @@
-FROM node:25.8.2-bookworm AS base
+FROM node:25.9.0-bookworm AS base
 
 # 1. Install dependencies only when needed
 FROM base AS deps
