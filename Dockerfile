@@ -20,7 +20,12 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN yarn build
+RUN \
+  if [ -f yarn.lock ]; then yarn build; \
+  elif [ -f package-lock.json ]; then npm run build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm build; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
 
 # 3. Production image, copy all the files and run next
