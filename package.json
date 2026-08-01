@@ -9,7 +9,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.4.0",
+    "@hookform/resolvers": "^5.5.7",
     "@next/env": "16.2.10",
     "@paypal/react-paypal-js": "^10.1.2",
     "bootstrap": "^5.3.8",
