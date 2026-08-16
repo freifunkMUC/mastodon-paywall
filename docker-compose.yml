@@ -5,3 +5,10 @@ services:
     env_file: .env
     ports:
       - 3001:3000
+    volumes:
+      # Persists the default sqlite database (DATABASE_URL) across restarts.
+      # Not needed if DATABASE_URL points at an external Postgres/MySQL.
+      - mastodon-paywall-data:/app/data
+
+volumes:
+  mastodon-paywall-data:

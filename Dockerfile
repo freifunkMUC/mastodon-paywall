@@ -42,6 +42,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=1000:1000 /app/.next/standalone ./
 COPY --from=builder --chown=1000:1000 /app/.next/static ./.next/static
 
+# Writable location for the default sqlite database (DATABASE_URL). Mount a
+# volume here to persist it across container recreation.
+RUN mkdir -p /app/data && chown 1000:1000 /app/data
+VOLUME /app/data
 
 USER 1000
 
