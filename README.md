@@ -41,12 +41,19 @@ To auto-disable accounts when a subscription ends, add a webhook in the
 your app → Webhooks):
 
 - URL: `https://<your-domain>/api/webhooks/paypal`
-- Events to subscribe to:
-  - `BILLING.SUBSCRIPTION.CANCELLED`
-  - `BILLING.SUBSCRIPTION.EXPIRED`
-  - `BILLING.SUBSCRIPTION.SUSPENDED`
-  - `BILLING.SUBSCRIPTION.ACTIVATED` (re-enables the account if the
-    subscription becomes active again after being suspended)
+- Events to subscribe to (dashboard labels shown in parentheses):
+  - `BILLING.SUBSCRIPTION.CANCELLED` (Billing subscription cancelled)
+  - `BILLING.SUBSCRIPTION.EXPIRED` (Billing subscription expired)
+  - `BILLING.SUBSCRIPTION.SUSPENDED` (Billing subscription suspended)
+  - `BILLING.SUBSCRIPTION.ACTIVATED` (Billing subscription activated) and
+    `BILLING.SUBSCRIPTION.RE-ACTIVATED` (Billing subscription re-activated) —
+    both re-enable the account if the subscription becomes active again
+    after being suspended
+
+  Not used: "Billing subscription created", "Billing subscription updated",
+  "Billing subscription payment failed" — PayPal already moves the
+  subscription to `SUSPENDED` after repeated payment failures, which the
+  webhook above already reacts to.
 
 Copy the resulting webhook ID into `PAYPAL_WEBHOOK_ID`. Every incoming
 webhook is verified against PayPal's Verify Webhook Signature API before

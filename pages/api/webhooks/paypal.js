@@ -13,10 +13,13 @@ const DISABLING_EVENTS = new Set([
   "BILLING.SUBSCRIPTION.SUSPENDED",
 ]);
 
-// Fires both on initial activation and on reactivation after a suspension —
-// BILLING.SUBSCRIPTION.RE-ACTIVATED only exists in PayPal's deprecated
-// Billing Plans & Agreements API, not the Subscriptions API used here.
-const ENABLING_EVENTS = new Set(["BILLING.SUBSCRIPTION.ACTIVATED"]);
+// ACTIVATED fires on initial activation, RE-ACTIVATED after a merchant/buyer
+// reactivates a previously suspended subscription. Both are selectable event
+// types in the PayPal webhook dashboard for this app.
+const ENABLING_EVENTS = new Set([
+  "BILLING.SUBSCRIPTION.ACTIVATED",
+  "BILLING.SUBSCRIPTION.RE-ACTIVATED",
+]);
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
