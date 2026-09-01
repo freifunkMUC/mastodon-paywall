@@ -16,7 +16,7 @@
     "@next/env": "^16.3.1",
     "@paypal/react-paypal-js": "^10.3.0",
     "bootstrap": "^5.3.8",
-    "mysql2": "^3.23.3",
+    "mysql2": "^3.24.2",
     "next": "^16.3.1",
     "pg": "^8.23.0",
     "react": "^19.2.8",
