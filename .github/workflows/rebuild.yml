@@ -99,6 +99,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Commit of the source
+        id: sha
+        if: steps.src.outputs.skip != 'true'
+        run: echo "sha=$(git -C src rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
       - name: Base image
         id: base
         if: steps.src.outputs.skip != 'true'
@@ -132,8 +137,9 @@ jobs:
         with:
           buildkitd-config: ci/.github/buildkitd.toml
 
-      # No cache, here and in the push below: a cached layer would carry old
-      # packages. Loaded into the local daemon to count its pending upgrades.
+      # No cache for the check; the publish reuses its layers (amd64) from a
+      # per-run scope, the other platform is built fresh. The compare is a
+      # pre-check on amd64; the published image is at least as fresh.
       - name: Build the image for this machine
         if: steps.decide.outputs.push == 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
@@ -143,6 +149,10 @@ jobs:
           push: false
           load: true
           no-cache: true
+          cache-to: type=gha,mode=max,scope=rebuild-${{ matrix.target }}-${{ github.run_id }}
+          build-args: |
+            VERSION=${{ steps.src.outputs.version }}
+            COMMIT=${{ steps.sha.outputs.sha }}
           tags: rebuild:test
 
       # The Dockerfile does not upgrade packages itself, so a fresh build has
@@ -226,7 +236,6 @@ jobs:
               echo "type=raw,value=latest"
             fi
             echo "EOF"
-            echo "sha=$(git -C src rev-parse HEAD)"
           } >> "$GITHUB_OUTPUT"
 
       # The moving tags follow every rebuild; <version>-rN stays.
@@ -240,11 +249,10 @@ jobs:
           labels: |
             org.opencontainers.image.authors=${{ env.AUTHOR }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-            org.opencontainers.image.revision=${{ steps.tags.outputs.sha }}
+            org.opencontainers.image.revision=${{ steps.sha.outputs.sha }}
             org.opencontainers.image.base.name=${{ steps.base.outputs.base_name }}
             org.opencontainers.image.base.digest=${{ steps.base.outputs.base_digest }}
 
-      # No cache: a cached layer would carry old packages.
       - name: Build and push every published platform
         id: push
         if: steps.head.outputs.current == 'true'
@@ -253,10 +261,10 @@ jobs:
           context: src
           platforms: linux/amd64,linux/arm64/v8
           push: true
-          no-cache: true
+          cache-from: type=gha,scope=rebuild-${{ matrix.target }}-${{ github.run_id }}
           build-args: |
             VERSION=${{ steps.src.outputs.version }}
-            COMMIT=${{ steps.tags.outputs.sha }}
+            COMMIT=${{ steps.sha.outputs.sha }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           provenance: mode=max
