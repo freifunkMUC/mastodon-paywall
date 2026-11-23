@@ -1,5 +1,8 @@
 name: Publish Docker image
 
+# Publishes the image from main and from release tags. rebuild.yml rebuilds
+# both every day and publishes if packages or the base image have updates.
+
 on:
   push:
     branches:
@@ -19,6 +22,11 @@ jobs:
   push_to_registry:
     name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
+    # Shared with rebuild.yml: two publishes of one ref must not overtake each
+    # other. Release tags share the group of the release rebuild.
+    concurrency:
+      group: ${{ startsWith(github.ref, 'refs/tags/') && 'publish-releases' || format('publish-{0}', github.ref) }}
+      cancel-in-progress: false
     permissions:
       contents: read
       packages: write
@@ -51,6 +59,12 @@ jobs:
           AUTHOR=$(curl -sSL ${{ github.event.repository.owner.url }} | jq -r '.name')
           echo "AUTHOR=$AUTHOR" >> $GITHUB_ENV
 
+      # the base image, for the labels below: the daily rebuild compares it
+      # with the Dockerfile
+      - name: Base image
+        id: base
+        run: .github/base-image.sh >> "$GITHUB_OUTPUT"
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
@@ -63,6 +77,8 @@ jobs:
           labels: |
             org.opencontainers.image.authors=${{ env.AUTHOR }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.base.name=${{ steps.base.outputs.base_name }}
+            org.opencontainers.image.base.digest=${{ steps.base.outputs.base_digest }}
 
       - name: Build and push container image
         id: push
@@ -73,7 +89,8 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          provenance: false
+          provenance: mode=max
+          sbom: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
