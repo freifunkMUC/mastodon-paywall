@@ -200,8 +200,8 @@ jobs:
         run: |
           remote=$(git -C src ls-remote --tags --refs origin 'refs/tags/v*')
           latest=$(grep -oE '[^/]+$' <<< "$remote" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1 || true)
-          if [ "$latest" != "v$VERSION" ]; then
-            echo "Latest release is now ${latest:-unknown}, not v$VERSION" >&2
+          if [ "$latest" != "$VERSION" ]; then
+            echo "Latest release is now ${latest:-unknown}, not $VERSION" >&2
             exit 1
           fi
 
